@@ -14,6 +14,35 @@ st.set_page_config(
 st.header("K3 Plattform")
 st.subheader("Ein Verbundprojekt von KJR und KoJa im Landkreis Weilheim Schongau")
 
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    Diese Plattform ist ein Prototyp, anhand dessen zukünftige Projektentwicklungen 
+    für die Jugendarbeit im Landkreis Weilheim Schongau entwickelt und gestestet werden sollen.
+    
+    Der Fokus liegt zu Beginn auf der Bereistellung einer Koordinationsplattform, um die Verteilung von Informationen
+    von und für Akteur:innen der Jugendarbeit im Landkreis zu verbessern. 
+    
+    Verantwortlich: 
+    
+    Sebastian Esser - Kreisjugendring Weilheim-Schongau
+    
+    Herbert Haseitl - Kreisjugendring Weilheim-Schongau   
+    
+    
+    """)
+
+with col2:
+    left_co, cent_co, last_co = st.columns(3)
+    with cent_co:
+        st.image("logos/kjr.png")
+
+with col3:
+    left_co, cent_co, last_co = st.columns(3)
+    with cent_co:
+        st.image("logos/logo-koja.jpg")
+
 
 st.header("Kommende Angebote")
 
