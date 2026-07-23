@@ -1,5 +1,5 @@
 <template>
-  <LMap :zoom="16" :center="center" style="height: 100%; width: 100%">
+  <LMap :zoom="16" :center="center" :use-global-leaflet="false" style="height: 100%; width: 100%">
     <LTileLayer
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       attribution="&amp;copy; OpenStreetMap contributors"

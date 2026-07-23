@@ -1,6 +1,6 @@
 <template>
   <div class="location-picker">
-    <LMap :zoom="16" :center="center" style="height: 260px; width: 100%" @click="onMapClick">
+    <LMap :zoom="16" :center="center" :use-global-leaflet="false" style="height: 260px; width: 100%" @click="onMapClick">
       <LTileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&amp;copy; OpenStreetMap contributors"
