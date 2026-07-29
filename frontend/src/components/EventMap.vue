@@ -1,5 +1,13 @@
 <template>
-  <LMap :zoom="16" :center="center" :use-global-leaflet="false" style="height: 100%; width: 100%">
+  <div ref="wrapEl" class="absolute inset-0">
+  <LMap
+    ref="mapRef"
+    :zoom="16"
+    :center="center"
+    :use-global-leaflet="false"
+    style="height: 100%; width: 100%"
+    @ready="onMapReady"
+  >
     <LTileLayer
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       attribution="&amp;copy; OpenStreetMap contributors"
@@ -28,10 +36,11 @@
       </LPopup>
     </LMarker>
   </LMap>
+  </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip } from '@vue-leaflet/vue-leaflet';
 import StatusBadge from './StatusBadge.vue';
 
@@ -43,13 +52,30 @@ const props = defineProps({
 const emit = defineEmits(['marker-dragend', 'edit-request', 'delete-request']);
 
 const center = [47.8397, 11.14411];
+const wrapEl = ref(null);
+let leafletMap = null;
+let resizeObserver = null;
 
 const locatedEvents = computed(() => props.events.filter((e) => e.lat != null && e.lng != null));
+
+function onMapReady(mapInstance) {
+  leafletMap = mapInstance;
+  leafletMap.invalidateSize();
+}
 
 function onDragEnd(event, leafletEvent) {
   const { lat, lng } = leafletEvent.target.getLatLng();
   emit('marker-dragend', { event, lat, lng });
 }
+
+onMounted(() => {
+  resizeObserver = new ResizeObserver(() => leafletMap?.invalidateSize());
+  if (wrapEl.value) resizeObserver.observe(wrapEl.value);
+});
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+});
 </script>
 
 <style scoped>

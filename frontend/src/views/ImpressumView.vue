@@ -1,5 +1,5 @@
 <template>
-  <div class="prose">
+  <div class="max-w-[70ch] [&_h2]:mt-7 [&_h2]:text-[1.15rem] [&_p]:text-text">
     <h1>Impressum</h1>
 
     <h2>Verantwortlich für Inhalt und Redaktion:</h2>
@@ -55,12 +55,3 @@
   </div>
 </template>
 
-<style scoped>
-.prose h2 {
-  margin-top: 1.75rem;
-  font-size: 1.15rem;
-}
-.prose p {
-  color: var(--color-text);
-}
-</style>

@@ -1,8 +1,8 @@
 <template>
-  <div class="login-page">
-    <div class="card login-card">
+  <div class="flex justify-center pt-8 md:pt-12">
+    <div class="card w-full max-w-[380px] shadow-lifted">
       <h1>Login</h1>
-      <p class="field-hint">Zugang für Redakteur:innen von KJR und KoJa.</p>
+      <p class="field-hint mb-5">Zugang für Redakteur:innen von KJR und KoJa.</p>
 
       <form @submit.prevent="handleSubmit">
         <div class="field">
@@ -14,9 +14,9 @@
           <input id="password" v-model="password" type="password" required autocomplete="current-password" />
         </div>
 
-        <p v-if="error" class="error">{{ error }}</p>
+        <p v-if="error" class="mb-3 text-sm text-rejected">{{ error }}</p>
 
-        <button type="submit" class="btn btn-primary" :disabled="submitting">
+        <button type="submit" class="btn btn-primary w-full justify-center" :disabled="submitting">
           {{ submitting ? 'Anmelden…' : 'Anmelden' }}
         </button>
       </form>
@@ -52,18 +52,3 @@ async function handleSubmit() {
 }
 </script>
 
-<style scoped>
-.login-page {
-  display: flex;
-  justify-content: center;
-  padding-top: 3rem;
-}
-.login-card {
-  width: 100%;
-  max-width: 380px;
-}
-.error {
-  color: var(--color-status-rejected-text);
-  font-size: 0.9rem;
-}
-</style>

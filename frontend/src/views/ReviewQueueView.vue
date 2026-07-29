@@ -1,13 +1,13 @@
 <template>
   <div>
     <h1>Review-Queue</h1>
-    <p v-if="events.error" class="error">{{ events.error }}</p>
+    <p v-if="events.error" class="text-sm text-rejected">{{ events.error }}</p>
 
-    <p v-if="!events.loading && events.pending.length === 0" class="empty">
+    <p v-if="!events.loading && events.pending.length === 0" class="text-text-muted">
       Aktuell liegen keine Angebote zur Prüfung vor.
     </p>
 
-    <div class="queue-list">
+    <div class="flex flex-col gap-4">
       <EventCard
         v-for="event in events.pending"
         :key="event.id"
@@ -54,16 +54,3 @@ async function handleRejectRequest(event) {
 }
 </script>
 
-<style scoped>
-.queue-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.error {
-  color: var(--color-status-rejected-text);
-}
-.empty {
-  color: var(--color-text-muted);
-}
-</style>

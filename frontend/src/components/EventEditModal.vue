@@ -1,6 +1,9 @@
 <template>
-  <div class="modal-backdrop" @click.self="$emit('close')">
-    <div class="modal card">
+  <div
+    class="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-primary-dark/55 p-4 backdrop-blur-sm md:p-8"
+    @click.self="$emit('close')"
+  >
+    <div class="card w-full max-w-2xl shadow-lifted">
       <h2>{{ mode === 'publish' ? 'Auf Karte platzieren & veröffentlichen' : 'Angebot bearbeiten' }}</h2>
 
       <form @submit.prevent="handleSave">
@@ -36,8 +39,8 @@
           <LocationPicker v-model="location" />
         </div>
 
-        <fieldset class="section">
-          <legend>Newsletter</legend>
+        <fieldset class="my-5 rounded-lg border border-border p-4 pt-3">
+          <legend class="px-1.5 font-bold text-primary-dark">Newsletter</legend>
           <div class="field">
             <label>Überschrift</label>
             <input v-model="form.newsletterTitle" type="text" />
@@ -46,21 +49,30 @@
             <label>Beschreibung</label>
             <textarea v-model="form.newsletterDescription" rows="3"></textarea>
           </div>
-          <label class="checkbox"><input v-model="form.newsletterDistributePrivate" type="checkbox" /> Verteilung im Newsletter für Privatpersonen.</label>
-          <label class="checkbox"><input v-model="form.newsletterDistributePublic" type="checkbox" /> Verteilung im Newsletter für öffentliche Einrichtungen.</label>
+          <label class="mb-2 flex items-center gap-2 font-normal">
+            <input v-model="form.newsletterDistributePrivate" type="checkbox" class="w-auto" /> Verteilung im
+            Newsletter für Privatpersonen.
+          </label>
+          <label class="mb-2 flex items-center gap-2 font-normal">
+            <input v-model="form.newsletterDistributePublic" type="checkbox" class="w-auto" /> Verteilung im
+            Newsletter für öffentliche Einrichtungen.
+          </label>
         </fieldset>
 
-        <fieldset class="section">
-          <legend>Instagram</legend>
+        <fieldset class="my-5 rounded-lg border border-border p-4 pt-3">
+          <legend class="px-1.5 font-bold text-primary-dark">Instagram</legend>
           <div class="field">
             <label>Caption Instagram</label>
             <textarea v-model="form.instagramCaption" rows="2"></textarea>
           </div>
-          <label class="checkbox"><input v-model="form.instagramCrosspostFacebook" type="checkbox" /> Auch über Facebook ausspielen</label>
+          <label class="mb-2 flex items-center gap-2 font-normal">
+            <input v-model="form.instagramCrosspostFacebook" type="checkbox" class="w-auto" /> Auch über Facebook
+            ausspielen
+          </label>
         </fieldset>
 
-        <fieldset class="section">
-          <legend>WhatsApp Channel</legend>
+        <fieldset class="my-5 rounded-lg border border-border p-4 pt-3">
+          <legend class="px-1.5 font-bold text-primary-dark">WhatsApp Channel</legend>
           <div class="field">
             <label>Caption WhatsApp-Channel</label>
             <textarea v-model="form.whatsappCaption" rows="2"></textarea>
@@ -72,9 +84,9 @@
           <textarea v-model="form.editorNotes" rows="2"></textarea>
         </div>
 
-        <p v-if="error" class="error">{{ error }}</p>
+        <p v-if="error" class="text-sm text-rejected">{{ error }}</p>
 
-        <div class="modal-actions">
+        <div class="mt-5 flex justify-end gap-3">
           <button type="button" class="btn btn-outline" @click="$emit('close')">Abbrechen</button>
           <button type="submit" class="btn btn-primary" :disabled="!canSave || saving">
             {{ mode === 'publish' ? 'Veröffentlichen' : 'Speichern' }}
@@ -159,50 +171,3 @@ async function handleSave() {
 }
 </script>
 
-<style scoped>
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(13, 46, 61, 0.55);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 2rem 1rem;
-  overflow-y: auto;
-  z-index: 1000;
-}
-.modal {
-  width: 100%;
-  max-width: 640px;
-}
-.section {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0.75rem 1rem 1rem;
-  margin: 1.25rem 0;
-}
-.section legend {
-  font-weight: 700;
-  color: var(--color-primary-dark);
-  padding: 0 0.4rem;
-}
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 400;
-  margin-bottom: 0.4rem;
-}
-.checkbox input {
-  width: auto;
-}
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
-}
-.error {
-  color: var(--color-status-rejected-text);
-}
-</style>

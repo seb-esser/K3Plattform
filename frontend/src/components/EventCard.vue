@@ -1,36 +1,47 @@
 <template>
-  <div class="card event-card">
-    <div class="event-card-header">
-      <h3>{{ event.organizer }}</h3>
+  <div class="card transition-shadow hover:shadow-lifted">
+    <div class="flex items-center justify-between gap-3">
+      <h3 class="m-0 text-lg font-bold text-primary-dark">{{ event.organizer }}</h3>
       <StatusBadge :status="event.status" />
     </div>
-    <p class="dates">{{ event.startDate }} {{ event.startTime }} &ndash; {{ event.endDate }} {{ event.endTime }}</p>
-    <p class="publish-date">Gewünschtes Publikationsdatum: {{ event.publishDate }}</p>
+    <p class="my-1 text-sm text-text-muted">
+      {{ event.startDate }} {{ event.startTime }} &ndash; {{ event.endDate }} {{ event.endTime }}
+    </p>
+    <p class="my-1 text-sm text-text-muted">Gewünschtes Publikationsdatum: {{ event.publishDate }}</p>
 
-    <div v-if="event.newsletterTitle || event.newsletterDescription" class="detail-block">
-      <p class="detail-label">Newsletter</p>
-      <p v-if="event.newsletterTitle" class="detail-title">{{ event.newsletterTitle }}</p>
-      <p v-if="event.newsletterDescription">{{ event.newsletterDescription }}</p>
+    <div v-if="event.newsletterTitle || event.newsletterDescription" class="mt-3 border-t border-border pt-3">
+      <p class="mb-1 text-xs font-bold uppercase tracking-wide text-primary-dark">Newsletter</p>
+      <p v-if="event.newsletterTitle" class="mb-1 font-semibold">{{ event.newsletterTitle }}</p>
+      <p v-if="event.newsletterDescription" class="text-sm">{{ event.newsletterDescription }}</p>
     </div>
 
-    <div v-if="event.instagramCaption" class="detail-block">
-      <p class="detail-label">Instagram{{ event.instagramCrosspostFacebook ? ' + Facebook' : '' }}</p>
-      <p>{{ event.instagramCaption }}</p>
+    <div v-if="event.instagramCaption" class="mt-3 border-t border-border pt-3">
+      <p class="mb-1 text-xs font-bold uppercase tracking-wide text-primary-dark">
+        Instagram{{ event.instagramCrosspostFacebook ? ' + Facebook' : '' }}
+      </p>
+      <p class="text-sm">{{ event.instagramCaption }}</p>
     </div>
 
-    <div v-if="event.whatsappCaption" class="detail-block">
-      <p class="detail-label">WhatsApp</p>
-      <p>{{ event.whatsappCaption }}</p>
+    <div v-if="event.whatsappCaption" class="mt-3 border-t border-border pt-3">
+      <p class="mb-1 text-xs font-bold uppercase tracking-wide text-primary-dark">WhatsApp</p>
+      <p class="text-sm">{{ event.whatsappCaption }}</p>
     </div>
 
-    <div v-if="event.attachments.length" class="attachments">
-      <p class="detail-label">Anhänge</p>
-      <a v-for="a in event.attachments" :key="a.id" :href="a.url" target="_blank" rel="noopener" class="attachment">
+    <div v-if="event.attachments.length" class="mt-3 flex flex-col gap-1 border-t border-border pt-3">
+      <p class="mb-1 text-xs font-bold uppercase tracking-wide text-primary-dark">Anhänge</p>
+      <a
+        v-for="a in event.attachments"
+        :key="a.id"
+        :href="a.url"
+        target="_blank"
+        rel="noopener"
+        class="text-sm underline"
+      >
         {{ a.originalFilename }} ({{ a.channel }})
       </a>
     </div>
 
-    <div class="event-card-actions">
+    <div class="mt-4 flex flex-wrap gap-3">
       <button class="btn btn-primary" @click="$emit('publish-request', event)">
         Auf Karte platzieren &amp; veröffentlichen
       </button>
@@ -47,54 +58,3 @@ defineProps({
 });
 defineEmits(['publish-request', 'reject-request']);
 </script>
-
-<style scoped>
-.event-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-.event-card-header h3 {
-  margin: 0;
-}
-.dates,
-.publish-date {
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-  margin: 0.3rem 0;
-}
-.detail-block {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border);
-}
-.detail-label {
-  font-weight: 700;
-  color: var(--color-primary-dark);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.25rem;
-}
-.detail-title {
-  font-weight: 600;
-  margin: 0 0 0.25rem;
-}
-.attachments {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-.attachment {
-  font-size: 0.9rem;
-}
-.event-card-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-</style>

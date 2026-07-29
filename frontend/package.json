@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "axios": "^1.18.1",
     "leaflet": "^1.9.4",
@@ -21,7 +22,10 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-vue": "^5.2.4",
+    "tailwindcss": "^4.3.3",
     "vite": "^5.4.21"
   }
 }

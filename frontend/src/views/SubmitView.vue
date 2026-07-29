@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>[AKTEUR] Neues Angebot einsenden</h1>
-    <p>Hier kannst Du uns Daten übermitteln, die wir über die bekannten Channels ausspielen können.</p>
+    <p class="mb-6 text-text-muted">
+      Hier kannst Du uns Daten übermitteln, die wir über die bekannten Channels ausspielen können.
+    </p>
 
-    <div v-if="submitted" class="card success">
+    <div v-if="submitted" class="card max-w-[480px] border-l-4 border-published bg-published-bg/40">
       <p>
         Danke! Dein Angebot wurde übermittelt und wird von unserem Team geprüft. Bitte beachte, dass wir für die
         Verarbeitung bis zu 7 Tage benötigen.
@@ -11,111 +13,136 @@
       <button class="btn btn-outline" @click="resetForm">Weiteres Angebot einsenden</button>
     </div>
 
-    <form v-else @submit.prevent="handleSubmit">
-      <h2>Basisdaten</h2>
-      <div class="form-grid">
-        <div class="col">
-          <div class="field">
-            <label>Veranstalter</label>
-            <input v-model="form.organizer" type="text" required />
+    <form v-else @submit.prevent="handleSubmit" class="max-w-3xl">
+      <div class="card">
+        <h2>Basisdaten</h2>
+        <div class="form-grid items-start">
+          <div>
+            <div class="field">
+              <label>Veranstalter</label>
+              <input v-model="form.organizer" type="text" required />
+            </div>
+            <div class="field">
+              <label>Startdatum</label>
+              <input v-model="form.startDate" type="date" required />
+            </div>
+            <div class="field">
+              <label>Startzeit</label>
+              <input v-model="form.startTime" type="time" required />
+            </div>
+            <div class="field">
+              <label>Enddatum</label>
+              <input v-model="form.endDate" type="date" required />
+            </div>
+            <div class="field">
+              <label>Endzeit</label>
+              <input v-model="form.endTime" type="time" required />
+            </div>
           </div>
-          <div class="field">
-            <label>Startdatum</label>
-            <input v-model="form.startDate" type="date" required />
-          </div>
-          <div class="field">
-            <label>Startzeit</label>
-            <input v-model="form.startTime" type="time" required />
-          </div>
-          <div class="field">
-            <label>Enddatum</label>
-            <input v-model="form.endDate" type="date" required />
-          </div>
-          <div class="field">
-            <label>Endzeit</label>
-            <input v-model="form.endTime" type="time" required />
+          <div>
+            <div class="field">
+              <label>Standort (optional)</label>
+              <LocationPicker v-model="location" />
+              <p class="field-hint">
+                Optional – die genaue Verortung nehmen unsere Redakteur:innen bei Bedarf noch vor.
+              </p>
+            </div>
           </div>
         </div>
-        <div class="col">
-          <div class="field">
-            <label>Standort (optional)</label>
-            <LocationPicker v-model="location" />
-            <p class="field-hint">
-              Optional – die genaue Verortung nehmen unsere Redakteur:innen bei Bedarf noch vor.
-            </p>
-          </div>
+
+        <div class="field mb-0">
+          <label>Gewünschtes Publikationsdatum</label>
+          <input v-model="form.publishDate" type="date" required />
+          <p class="field-hint">
+            Bitte beachte, dass wir für die Verarbeitung Deines Angebots bis zu 7 Tage benötigen.
+          </p>
         </div>
       </div>
 
-      <div class="field">
-        <label>Gewünschtes Publikationsdatum</label>
-        <input v-model="form.publishDate" type="date" required />
-        <p class="field-hint">Bitte beachte, dass wir für die Verarbeitung Deines Angebots bis zu 7 Tage benötigen.</p>
-      </div>
-
-      <details class="section" open>
-        <summary>Newsletter</summary>
-        <div class="field">
-          <label>Deine Überschrift</label>
-          <input v-model="form.newsletterTitle" type="text" />
-        </div>
-        <div class="field">
-          <label>Beschreibe Dein Angebot</label>
-          <textarea v-model="form.newsletterDescription" rows="3"></textarea>
-        </div>
-        <div class="field">
-          <label>Begleitende Dateien (z.B. Bilder, Videos, ...)</label>
-          <input type="file" multiple @change="onFileChange($event, 'newsletterFiles')" />
-        </div>
-        <label class="checkbox">
-          <input v-model="form.newsletterDistributePrivate" type="checkbox" />
-          Verteilung im Newsletter für Privatpersonen.
-        </label>
-        <label class="checkbox">
-          <input v-model="form.newsletterDistributePublic" type="checkbox" />
-          Verteilung im Newsletter für öffentliche Einrichtungen (Schulen, Gemeinde- und Stadtverwaltungen, ...).
-        </label>
-      </details>
-
-      <details class="section">
-        <summary>Instagram</summary>
-        <p class="field-hint">
-          Bitte nummeriere die Bilder in ihrer Benennung, sodass klar wird, in welcher Reihenfolge wir sie
-          veröffentlichen sollen
-        </p>
-        <div class="field">
-          <label>Bild-Dateien für Instagram und Facebook</label>
-          <input type="file" multiple @change="onFileChange($event, 'instagramFiles')" />
-        </div>
-        <div class="field">
-          <label>Caption Instagram</label>
-          <textarea v-model="form.instagramCaption" rows="2"></textarea>
-        </div>
-        <label class="checkbox">
-          <input v-model="form.instagramCrosspostFacebook" type="checkbox" />
-          Auch über Facebook ausspielen
-        </label>
-      </details>
-
-      <details class="section">
-        <summary>WhatsApp Channel</summary>
-        <p class="field-hint">
-          Bitte nummeriere die Bilder in ihrer Benennung, sodass klar wird, in welcher Reihenfolge wir sie
-          veröffentlichen sollen
-        </p>
-        <div class="field">
-          <label>Bild-Dateien für WhatsApp-Channel</label>
-          <input type="file" multiple @change="onFileChange($event, 'whatsappFiles')" />
-        </div>
-        <div class="field">
-          <label>Caption WhatsApp-Channel</label>
-          <textarea v-model="form.whatsappCaption" rows="2"></textarea>
+      <details class="card group mt-5" open>
+        <summary
+          class="flex cursor-pointer list-none items-center justify-between font-bold text-primary-dark [&::-webkit-details-marker]:hidden"
+        >
+          Newsletter
+          <ChevronDownIcon class="h-5 w-5 transition-transform group-open:rotate-180" />
+        </summary>
+        <div class="mt-4">
+          <div class="field">
+            <label>Deine Überschrift</label>
+            <input v-model="form.newsletterTitle" type="text" />
+          </div>
+          <div class="field">
+            <label>Beschreibe Dein Angebot</label>
+            <textarea v-model="form.newsletterDescription" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label>Begleitende Dateien (z.B. Bilder, Videos, ...)</label>
+            <input type="file" multiple @change="onFileChange($event, 'newsletterFiles')" />
+          </div>
+          <label class="mb-2 flex items-center gap-2 font-normal">
+            <input v-model="form.newsletterDistributePrivate" type="checkbox" class="w-auto" />
+            Verteilung im Newsletter für Privatpersonen.
+          </label>
+          <label class="mb-2 flex items-center gap-2 font-normal">
+            <input v-model="form.newsletterDistributePublic" type="checkbox" class="w-auto" />
+            Verteilung im Newsletter für öffentliche Einrichtungen (Schulen, Gemeinde- und Stadtverwaltungen, ...).
+          </label>
         </div>
       </details>
 
-      <p v-if="error" class="error">{{ error }}</p>
+      <details class="card group mt-5">
+        <summary
+          class="flex cursor-pointer list-none items-center justify-between font-bold text-primary-dark [&::-webkit-details-marker]:hidden"
+        >
+          Instagram
+          <ChevronDownIcon class="h-5 w-5 transition-transform group-open:rotate-180" />
+        </summary>
+        <div class="mt-4">
+          <p class="field-hint mb-3">
+            Bitte nummeriere die Bilder in ihrer Benennung, sodass klar wird, in welcher Reihenfolge wir sie
+            veröffentlichen sollen
+          </p>
+          <div class="field">
+            <label>Bild-Dateien für Instagram und Facebook</label>
+            <input type="file" multiple @change="onFileChange($event, 'instagramFiles')" />
+          </div>
+          <div class="field">
+            <label>Caption Instagram</label>
+            <textarea v-model="form.instagramCaption" rows="2"></textarea>
+          </div>
+          <label class="mb-2 flex items-center gap-2 font-normal">
+            <input v-model="form.instagramCrosspostFacebook" type="checkbox" class="w-auto" />
+            Auch über Facebook ausspielen
+          </label>
+        </div>
+      </details>
 
-      <button type="submit" class="btn btn-primary" :disabled="submitting">
+      <details class="card group mt-5">
+        <summary
+          class="flex cursor-pointer list-none items-center justify-between font-bold text-primary-dark [&::-webkit-details-marker]:hidden"
+        >
+          WhatsApp Channel
+          <ChevronDownIcon class="h-5 w-5 transition-transform group-open:rotate-180" />
+        </summary>
+        <div class="mt-4">
+          <p class="field-hint mb-3">
+            Bitte nummeriere die Bilder in ihrer Benennung, sodass klar wird, in welcher Reihenfolge wir sie
+            veröffentlichen sollen
+          </p>
+          <div class="field">
+            <label>Bild-Dateien für WhatsApp-Channel</label>
+            <input type="file" multiple @change="onFileChange($event, 'whatsappFiles')" />
+          </div>
+          <div class="field mb-0">
+            <label>Caption WhatsApp-Channel</label>
+            <textarea v-model="form.whatsappCaption" rows="2"></textarea>
+          </div>
+        </div>
+      </details>
+
+      <p v-if="error" class="mt-4 text-sm text-rejected">{{ error }}</p>
+
+      <button type="submit" class="btn btn-primary mt-5" :disabled="submitting">
         {{ submitting ? 'Senden…' : 'Senden' }}
       </button>
     </form>
@@ -124,6 +151,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { useEventsStore } from '../stores/events';
 import LocationPicker from '../components/LocationPicker.vue';
 
@@ -203,37 +231,3 @@ async function handleSubmit() {
 }
 </script>
 
-<style scoped>
-.form-grid {
-  align-items: start;
-}
-.section {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0.25rem 1rem 1rem;
-  margin: 1.25rem 0;
-  background: var(--color-surface);
-}
-.section summary {
-  font-weight: 700;
-  color: var(--color-primary-dark);
-  cursor: pointer;
-  padding: 0.6rem 0;
-}
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 400;
-  margin-bottom: 0.4rem;
-}
-.checkbox input {
-  width: auto;
-}
-.success {
-  max-width: 480px;
-}
-.error {
-  color: var(--color-status-rejected-text);
-}
-</style>

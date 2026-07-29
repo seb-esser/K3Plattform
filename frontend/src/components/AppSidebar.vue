@@ -1,48 +1,94 @@
 <template>
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <img src="/logos/kjr.png" alt="KJR Weilheim-Schongau" class="logo logo-kjr" />
-      <a href="https://kjr-wm-sog.de" target="_blank" rel="noopener" class="btn btn-outline link-btn">
+  <aside
+    class="flex w-full shrink-0 flex-row items-center gap-3 bg-gradient-to-b from-primary to-primary-dark px-4 py-3 text-text-on-primary md:w-[var(--sidebar-width)] md:flex-col md:items-stretch md:gap-6 md:px-5 md:py-6"
+  >
+    <div class="hidden flex-col items-center gap-2 md:flex">
+      <img src="/logos/kjr.png" alt="KJR Weilheim-Schongau" class="w-24 rounded-lg bg-white p-1 shadow-soft" />
+      <a
+        href="https://kjr-wm-sog.de"
+        target="_blank"
+        rel="noopener"
+        class="btn btn-outline mb-1 w-full justify-center border-white/40 text-text-on-primary hover:border-white hover:bg-white/10"
+      >
         KJR WM SOG
       </a>
-      <img src="/logos/logo-koja.jpg" alt="KoJa Weilheim-Schongau" class="logo logo-koja" />
+      <img src="/logos/logo-koja.jpg" alt="KoJa Weilheim-Schongau" class="w-24 rounded-lg bg-white p-1 shadow-soft" />
       <a
         href="https://www.weilheim-schongau.de/landkreis/jugend-und-familie/koja/"
         target="_blank"
         rel="noopener"
-        class="btn btn-outline link-btn"
+        class="btn btn-outline w-full justify-center border-white/40 text-text-on-primary hover:border-white hover:bg-white/10"
       >
         KoJa WM SOG
       </a>
     </div>
 
-    <nav class="sidebar-nav">
-      <RouterLink to="/" class="nav-link">Start</RouterLink>
-      <RouterLink to="/map" class="nav-link">Karte</RouterLink>
-      <RouterLink to="/submit" class="nav-link">Angebot einsenden</RouterLink>
-      <RouterLink v-if="auth.isEditor" to="/review" class="nav-link">
-        Review-Queue
-        <span v-if="pendingCount > 0" class="badge">{{ pendingCount }}</span>
+    <img src="/logos/kjr.png" alt="K3 Plattform" class="h-9 w-9 rounded-md bg-white p-1 md:hidden" />
+
+    <nav class="flex flex-1 flex-row flex-wrap items-center gap-1 md:flex-col md:items-stretch md:gap-1">
+      <RouterLink
+        v-for="item in navItems"
+        :key="item.to"
+        :to="item.to"
+        class="group flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-text-on-primary/85 transition-colors hover:bg-white/10 hover:text-text-on-primary"
+        active-class="!bg-white/15 !text-text-on-primary"
+      >
+        <component :is="item.icon" class="h-5 w-5 shrink-0 opacity-90" />
+        <span class="hidden md:inline">{{ item.label }}</span>
+        <span
+          v-if="item.badge"
+          class="ml-auto hidden rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-primary-dark md:inline"
+        >
+          {{ item.badge }}
+        </span>
       </RouterLink>
-      <RouterLink to="/impressum" class="nav-link">Impressum</RouterLink>
     </nav>
 
-    <div class="sidebar-auth">
+    <div class="ml-auto hidden flex-col md:ml-0 md:mt-auto md:flex md:border-t md:border-white/15 md:pt-4">
       <template v-if="auth.isAuthenticated">
-        <p class="auth-name">{{ auth.user.name }}</p>
-        <p class="auth-role">{{ auth.isEditor ? 'Redakteur:in' : auth.user.role }}</p>
-        <button class="btn btn-outline" @click="handleLogout">Logout</button>
+        <p class="m-0 text-sm font-semibold">{{ auth.user.name }}</p>
+        <p class="m-0 mb-2 text-xs text-text-on-primary/70">{{ auth.isEditor ? 'Redakteur:in' : auth.user.role }}</p>
+        <button
+          class="btn btn-outline w-full justify-center border-white/40 text-text-on-primary hover:border-white hover:bg-white/10"
+          @click="handleLogout"
+        >
+          <ArrowRightOnRectangleIcon class="h-4 w-4" />
+          Logout
+        </button>
       </template>
-      <RouterLink v-else to="/login" class="btn btn-outline">Login</RouterLink>
+      <RouterLink
+        v-else
+        to="/login"
+        class="btn btn-outline w-full justify-center border-white/40 text-text-on-primary hover:border-white hover:bg-white/10"
+      >
+        <ArrowLeftOnRectangleIcon class="h-4 w-4" />
+        Login
+      </RouterLink>
     </div>
 
-    <p class="copyright">Copyright &copy;&#65039; {{ year }}</p>
+    <RouterLink v-if="!auth.isAuthenticated" to="/login" class="ml-auto md:hidden" aria-label="Login">
+      <ArrowLeftOnRectangleIcon class="h-6 w-6" />
+    </RouterLink>
+    <button v-else class="ml-auto md:hidden" aria-label="Logout" @click="handleLogout">
+      <ArrowRightOnRectangleIcon class="h-6 w-6" />
+    </button>
+
+    <p class="hidden text-center text-xs text-text-on-primary/50 md:block">Copyright &copy;&#65039; {{ year }}</p>
   </aside>
 </template>
 
 <script setup>
 import { computed, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import {
+  HomeIcon,
+  MapIcon,
+  PaperAirplaneIcon,
+  ClipboardDocumentCheckIcon,
+  InformationCircleIcon,
+  ArrowRightOnRectangleIcon,
+  ArrowLeftOnRectangleIcon,
+} from '@heroicons/vue/24/outline';
 import { useAuthStore } from '../stores/auth';
 import { useEventsStore } from '../stores/events';
 
@@ -52,6 +98,24 @@ const router = useRouter();
 
 const year = new Date().getFullYear();
 const pendingCount = computed(() => events.pending.length);
+
+const navItems = computed(() => {
+  const items = [
+    { to: '/', label: 'Start', icon: HomeIcon },
+    { to: '/map', label: 'Karte', icon: MapIcon },
+    { to: '/submit', label: 'Angebot einsenden', icon: PaperAirplaneIcon },
+  ];
+  if (auth.isEditor) {
+    items.push({
+      to: '/review',
+      label: 'Review-Queue',
+      icon: ClipboardDocumentCheckIcon,
+      badge: pendingCount.value > 0 ? pendingCount.value : null,
+    });
+  }
+  items.push({ to: '/impressum', label: 'Impressum', icon: InformationCircleIcon });
+  return items;
+});
 
 watchEffect(() => {
   if (auth.isEditor) {
@@ -64,132 +128,3 @@ function handleLogout() {
   router.push('/');
 }
 </script>
-
-<style scoped>
-.sidebar {
-  width: var(--sidebar-width);
-  flex-shrink: 0;
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 1.25rem;
-  gap: 1.5rem;
-}
-
-.sidebar-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.logo {
-  max-width: 100px;
-  border-radius: var(--radius-sm);
-  background: white;
-  padding: 4px;
-}
-
-.link-btn {
-  color: var(--color-text-on-primary);
-  border-color: rgba(247, 245, 240, 0.5);
-  width: 100%;
-  justify-content: center;
-  margin-bottom: 0.75rem;
-}
-.link-btn:hover {
-  background: rgba(247, 245, 240, 0.12);
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.nav-link {
-  color: var(--color-text-on-primary);
-  text-decoration: none;
-  padding: 0.5rem 0.6rem;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
-}
-
-.nav-link:hover,
-.nav-link.router-link-active {
-  background: rgba(247, 245, 240, 0.15);
-}
-
-.badge {
-  background: var(--color-accent);
-  color: var(--color-primary-dark);
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.05rem 0.5rem;
-}
-
-.sidebar-auth {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(247, 245, 240, 0.2);
-}
-
-.auth-name {
-  margin: 0;
-  font-weight: 600;
-}
-
-.auth-role {
-  margin: 0 0 0.5rem;
-  font-size: 0.85rem;
-  color: rgba(247, 245, 240, 0.75);
-}
-
-.sidebar-auth .btn {
-  width: 100%;
-  justify-content: center;
-}
-
-.copyright {
-  margin: 0;
-  font-size: 0.8rem;
-  color: rgba(247, 245, 240, 0.6);
-  text-align: center;
-}
-
-@media (max-width: 860px) {
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 0.75rem 1rem;
-  }
-  .sidebar-brand {
-    flex-direction: row;
-  }
-  .logo {
-    max-width: 40px;
-  }
-  .link-btn {
-    display: none;
-  }
-  .sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .sidebar-auth {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-  }
-  .copyright {
-    display: none;
-  }
-}
-</style>

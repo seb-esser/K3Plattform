@@ -1,9 +1,9 @@
 <template>
-  <div class="map-page">
+  <div class="flex min-h-0 flex-1 flex-col">
     <h1>Kommende Angebote</h1>
-    <p v-if="events.error" class="error">{{ events.error }}</p>
+    <p v-if="events.error" class="text-sm text-rejected">{{ events.error }}</p>
 
-    <div class="map-wrap card">
+    <div class="card relative mt-2 min-h-[520px] flex-1 overflow-hidden p-0">
       <EventMap
         :events="events.published"
         :editable="auth.isEditor"
@@ -60,19 +60,3 @@ async function handleDeleteRequest(event) {
 }
 </script>
 
-<style scoped>
-.map-page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.map-wrap {
-  flex: 1;
-  min-height: 520px;
-  padding: 0;
-  overflow: hidden;
-}
-.error {
-  color: var(--color-status-rejected-text);
-}
-</style>
