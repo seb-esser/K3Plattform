@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Fraunces', 'Iowan Old Style', 'Georgia', serif;
 
   --color-primary: #16495f;
   --color-primary-light: #2e7a99;
@@ -11,6 +12,9 @@
   --color-accent: #f2a93b;
   --color-accent-light: #f7c976;
   --color-accent-dark: #d68c1c;
+
+  --color-moss: #6f8d6a;
+  --color-moss-dark: #4c6548;
 
   --color-background: #f7f5f0;
   --color-surface: #ffffff;
@@ -60,7 +64,10 @@
   }
 
   h1 {
-    font-size: 1.85rem;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     margin: 0 0 0.5rem;
   }
 
